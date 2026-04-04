@@ -1,5 +1,7 @@
 package com.example.product.domain.model;
 
+import jakarta.persistence.Entity;
+
 import java.math.BigDecimal;
 
 public class Product {

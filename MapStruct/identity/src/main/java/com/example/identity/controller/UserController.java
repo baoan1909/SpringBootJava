@@ -1,6 +1,7 @@
 package com.example.identity.controller;
 
 import com.example.identity.dto.request.UserCreationRequest;
+import com.example.identity.dto.response.UserDeliveryResponse;
 import com.example.identity.dto.response.UserResponse;
 import com.example.identity.dto.request.UserUpdateRequest;
 import com.example.identity.entity.User;
@@ -39,6 +40,11 @@ public class UserController {
     String deleteUser(@PathVariable String userId) {
         userService.deleteUser(userId);
         return "User deleted";
+    }
+
+    @GetMapping("/{userId}/delivery/{addressId}")
+    UserDeliveryResponse getUserDelivery(@PathVariable String userId, @PathVariable String addressId){
+       return userService.getUserDelivery(userId, addressId);
     }
 
 }

@@ -11,9 +11,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserDeliveryResponse {
     private String username;
-    private String firstname;
-    private String lastname;
-
-    private String streetName;
-    private String cityName;
+//    private String firstname;
+//    private String lastname;
+//
+//    private String streetName;
+//    private String cityName;
+    private String fullname;
+    private String fullAddress;
 }

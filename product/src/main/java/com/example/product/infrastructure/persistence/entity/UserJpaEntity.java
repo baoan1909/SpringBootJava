@@ -1,4 +1,4 @@
-package com.example.product.domain.model;
+package com.example.product.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,26 +12,14 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class User {
+public class UserJpaEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name="id")
-    private String id;
-
-    @Column(name="username")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String username;
-
-    @Column(name="password")
     private String password;
-
-    @Column(name="firstname")
     private String firstname;
-
-    @Column(name="lastname")
     private String lastname;
-
-    @Column(name="dob")
     private LocalDate dob;
 
 }

@@ -1,13 +1,13 @@
 package com.example.product.interfaces.rest;
 
-import com.example.product.application.dto.CreateProductCommand;
-import com.example.product.application.dto.ProductResponse;
-import com.example.product.application.dto.UpdateProductCommand;
+import com.example.product.application.common.Pagination;
+import com.example.product.application.dto.command.CreateProductCommand;
+import com.example.product.application.dto.command.ProductCriteriaCommand;
+import com.example.product.application.dto.response.ProductResponse;
+import com.example.product.application.dto.command.UpdateProductCommand;
 import com.example.product.application.service.ProductApplicationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
@@ -30,8 +30,8 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<ProductResponse> findAll() {
-        return productApplicationService.getAll();
+    public Pagination<ProductResponse> findAll(ProductCriteriaCommand command) {
+        return productApplicationService.getAll(command);
     }
 
     @GetMapping("/{id}")

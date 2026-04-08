@@ -1,8 +1,11 @@
 package com.example.product.application.service;
 
-import com.example.product.application.dto.CreateProductCommand;
-import com.example.product.application.dto.ProductResponse;
-import com.example.product.application.dto.UpdateProductCommand;
+import com.example.product.application.common.Pagination;
+import com.example.product.application.dto.command.CreateProductCommand;
+import com.example.product.application.dto.command.ProductCriteriaCommand;
+import com.example.product.application.dto.response.ProductResponse;
+import com.example.product.application.dto.command.UpdateProductCommand;
+import com.example.product.application.mapper.ProductDtoMapper;
 import com.example.product.domain.exception.ProductNotFoundException;
 import com.example.product.domain.model.Product;
 import com.example.product.domain.repository.ProductRepository;
@@ -15,9 +18,11 @@ import java.util.List;
 @Transactional
 public class ProductApplicationService {
     private final ProductRepository productRepository;
+    private final ProductDtoMapper productDtoMapper;
 
-    public ProductApplicationService(ProductRepository productRepository) {
+    public ProductApplicationService(ProductRepository productRepository, ProductDtoMapper productDtoMapper) {
         this.productRepository = productRepository;
+        this.productDtoMapper = productDtoMapper;
     }
 
     public ProductResponse create(CreateProductCommand command) {
@@ -31,8 +36,12 @@ public class ProductApplicationService {
                 command.name(),
                 command.price()
         );
-        productRepository.save(product);
-        return toResponse(product);
+        for (CreateProductCommand.VariantItem item : command.variants()) {
+            product.addVariant(item.color(), item.size(), item.additionalPrice());
+        }
+        Product created = productRepository.save(product);
+        System.out.println("SỐ LƯỢNG VARIANT TRONG DOMAIN SAU KHI LƯU: " + created.getVariants().size());
+        return productDtoMapper.toResponse(created);
     }
 
     public ProductResponse update(Long id, UpdateProductCommand command) {
@@ -42,22 +51,30 @@ public class ProductApplicationService {
 
         product.updateInfo(command.name(), command.price());
         Product updated = productRepository.save(product);
-        return toResponse(updated);
+        return productDtoMapper.toResponse(updated);
     }
 
     @Transactional(readOnly = true)
     public ProductResponse getById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
-        return toResponse(product);
+        return productDtoMapper.toResponse(product);
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponse> getAll() {
-        return productRepository.findAll()
+    public Pagination<ProductResponse> getAll(ProductCriteriaCommand command) {
+        Pagination<Product> productPage = productRepository.findAll(command);
+        List<ProductResponse> responseData = productPage.data()
                 .stream()
-                .map(this::toResponse)
+                .map(productDtoMapper::toResponse)
                 .toList();
+
+        return new Pagination<>(
+                responseData,
+                productPage.currentPage(),
+                productPage.totalPage(),
+                productPage.totalElements()
+        );
     }
 
     public void delete(Long id) {
@@ -66,14 +83,4 @@ public class ProductApplicationService {
         }
         productRepository.deleteById(id);
     }
-
-    private ProductResponse toResponse(Product product) {
-        return new ProductResponse(
-                product.getId(),
-                product.getSku(),
-                product.getName(),
-                product.getPrice()
-        );
-    }
-
 }

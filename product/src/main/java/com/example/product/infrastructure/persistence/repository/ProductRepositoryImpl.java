@@ -28,9 +28,17 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public Product save(Product product) {
-        ProductJpaEntity productJpaEntity = productEntityMapper.toJpaEntity(product);
-        ProductJpaEntity productSaved = springDataProductRepository.save(productJpaEntity);
-        return productEntityMapper.toDomain(productSaved);
+        if (product.getId() == null) {
+            ProductJpaEntity productJpaEntity = productEntityMapper.toJpaEntity(product);
+            ProductJpaEntity productSaved = springDataProductRepository.save(productJpaEntity);
+            return productEntityMapper.toDomain(productSaved);
+        }else{
+            ProductJpaEntity productJpaEntity = springDataProductRepository.findById(product.getId())
+                    .orElseThrow();
+            productEntityMapper.updateJpaEntityDomain(product, productJpaEntity);
+            ProductJpaEntity productSaved = springDataProductRepository.save(productJpaEntity);
+            return productEntityMapper.toDomain(productSaved);
+        }
     }
 
     @Override

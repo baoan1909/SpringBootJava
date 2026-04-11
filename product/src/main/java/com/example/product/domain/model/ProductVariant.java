@@ -12,16 +12,24 @@ public class ProductVariant {
     private BigDecimal additionalPrice;
 
     public ProductVariant(Long id, String color, String size, BigDecimal additionalPrice) {
-        if (color == null || color.isBlank()){
-            throw new IllegalArgumentException("color không được để trống");
+        if ((color == null || color.isBlank()) && (size == null || size.isBlank())) {
+            throw new IllegalArgumentException("Bạn cần chọn 1 biến thể");
         }
-        if (size == null || size.isBlank()){
-            throw new IllegalArgumentException("size không được để trống");
+        if (additionalPrice == null || additionalPrice.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Giá phụ thu không được âm");
         }
 
         this.id = id;
         this.color = color;
         this.size = size;
-        this.additionalPrice = additionalPrice != null ? additionalPrice : BigDecimal.ZERO;
+        this.additionalPrice = additionalPrice;
+    }
+
+    public void updateAdditionalPrice(BigDecimal additionalPrice) {
+        if (additionalPrice == null || additionalPrice.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Giá phụ thu không được âm");
+        }
+
+        this.additionalPrice = additionalPrice;
     }
 }

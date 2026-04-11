@@ -58,22 +58,48 @@ public class Product {
         this.price = price;
     }
 
-    public void addVariant(String color, String size, BigDecimal additionalPrice) {
-        if (this.variants.size() >= 50){
-            throw new IllegalArgumentException("Sản phẩm không được vượt quá 50 phiên bản");
+    public void addVariant(List<String> colors, List<String> sizes, BigDecimal additionalPrice) {
+        if ((colors == null || colors.isEmpty()) && (sizes == null || sizes.isEmpty())){
+            return;
         }
 
-        boolean exists = this.variants.stream()
-                .anyMatch(v -> v.getColor().equalsIgnoreCase(color) && v.getSize().equalsIgnoreCase(size));
-        if (exists){
-            throw new IllegalArgumentException(String.format("Phiên bản %s - %s đã tồn tại", color, size));
+        int variantsToAdd = colors.size() * sizes.size();
+        if(this.variants.size() + variantsToAdd > 50){
+            throw new IllegalArgumentException(String.format("Sản phẩm không được vượt quá 50 phiên bản"));
         }
 
-        this.variants.add(new ProductVariant(null, color, size, additionalPrice));
+        for(String color: colors){
+            for ( String size: sizes ){
+                boolean exists = this.variants.stream()
+                        .anyMatch(v -> v.getColor().equalsIgnoreCase(color) && v.getSize().equalsIgnoreCase(size));
+                if (exists){
+                    throw new IllegalArgumentException(String.format("Phiên bản %s - %s đã tồn tại", color, size));
+                }
+
+                this.variants.add(new ProductVariant(null, color, size, additionalPrice));
+            }
+        }
     }
 
-    public void removeVariant(String color, String size) {
-        this.variants.removeIf(v -> v.getColor().equalsIgnoreCase(color) && v.getSize().equalsIgnoreCase(size));
+    public void updateVariantPrice(String color, String size, BigDecimal additionalPrice) {
+        ProductVariant variant = this.variants.stream()
+                .filter(v -> v.getColor().equalsIgnoreCase(color) && v.getSize().equalsIgnoreCase(size))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("Không tìm thấy phiên bản %s - %s để cập nhật ", color, size)));
+        variant.updateAdditionalPrice(additionalPrice);
+    }
+
+    public void removeVariantsByCriteria(String color, String size) {
+        List<ProductVariant> variantsToRemove = this.variants.stream()
+                .filter(v -> color == null || v.getColor().equalsIgnoreCase(color))
+                .filter(v -> size == null || v.getSize().equalsIgnoreCase(size))
+                .toList();
+
+        if (variantsToRemove.isEmpty()){
+            throw new IllegalArgumentException("Không tìm thấy phiên bản khớp tiêu chí để xóa");
+        }
+        this.variants.removeAll(variantsToRemove);
     }
 
     public List<ProductVariant> getVariants() {

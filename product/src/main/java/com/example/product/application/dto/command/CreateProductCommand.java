@@ -10,16 +10,17 @@ public record CreateProductCommand(
         List<VariantItem> variants
 ) {
     public record VariantItem(
-            String color,
-            String size,
+            List<String> colors,
+            List<String> sizes,
             BigDecimal additionalPrice
     ){
 
     }
 
-    public CreateProductCommand{
-        if (variants == null){
-            variants = List.of();
-        }
+    public CreateProductCommand(String sku, String name, BigDecimal price, List<VariantItem> variants) {
+        this.sku = sku;
+        this.name = name;
+        this.price = price;
+        this.variants = (variants == null) ? List.of() : variants;
     }
 }

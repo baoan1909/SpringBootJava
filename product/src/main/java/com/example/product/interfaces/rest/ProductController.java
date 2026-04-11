@@ -2,11 +2,13 @@ package com.example.product.interfaces.rest;
 
 import com.example.product.application.common.Pagination;
 import com.example.product.application.dto.command.CreateProductCommand;
+import com.example.product.application.dto.command.CreateVariantsCommand;
 import com.example.product.application.dto.command.ProductCriteriaCommand;
 import com.example.product.application.dto.response.ProductResponse;
 import com.example.product.application.dto.command.UpdateProductCommand;
 import com.example.product.application.service.ProductApplicationService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,6 +24,12 @@ public class ProductController {
     @ResponseStatus(HttpStatus.CREATED)
     public ProductResponse create(@RequestBody CreateProductCommand command) {
         return productApplicationService.create(command);
+    }
+
+    @PostMapping("/{productId}/variants")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProductResponse createVariant(@PathVariable Long productId, @RequestBody CreateVariantsCommand command) {
+        return productApplicationService.createVariantToExistingProduct(productId, command);
     }
 
     @PutMapping("/{id}")
@@ -41,8 +49,20 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public String delete(@PathVariable Long id) {
         productApplicationService.delete(id);
+        return "Sản phẩm đã bị xóa";
+    }
+
+    @DeleteMapping("/{productId}/variants")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public String deleteVariant(
+            @PathVariable Long productId,
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) String size
+    ){
+        productApplicationService.deleteProductVariant(productId, color, size);
+        return "Biến thể đã bị xóa";
     }
 
 }

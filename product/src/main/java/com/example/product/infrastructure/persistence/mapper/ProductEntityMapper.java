@@ -16,6 +16,8 @@ public interface ProductEntityMapper {
     ProductVariantJpaEntity toJpaVariantEntity(ProductVariant variant);
     ProductVariant toVariantDomain(ProductVariantJpaEntity entity);
 
+    void updateJpaEntityDomain(Product product, @MappingTarget ProductJpaEntity entity);
+
     @AfterMapping
     default void linkVariants(@MappingTarget ProductJpaEntity productJpa){
         if(productJpa.getVariants() != null){

@@ -8,6 +8,7 @@ import com.example.product.infrastructure.persistence.mapper.AccountEntityMapper
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,11 @@ public class AccountRepositoryImpl implements AccountRepository {
         AccountJpaEntity accountSaved = springDataAccountRepository.save(accountJpaEntity);
 
         return accountEntityMapper.toAccountDomain(accountSaved);
+    }
+
+    @Override
+    public Optional<Account> findByEmail(String email) {
+        return springDataAccountRepository.findByEmail(email).map(accountEntityMapper::toAccountDomain);
     }
 
     @Override

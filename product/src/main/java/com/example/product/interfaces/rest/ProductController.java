@@ -8,7 +8,6 @@ import com.example.product.application.dto.response.ProductResponse;
 import com.example.product.application.dto.command.UpdateProductCommand;
 import com.example.product.application.service.ProductApplicationService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -49,20 +48,18 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) {
         productApplicationService.delete(id);
-        return "Sản phẩm đã bị xóa";
     }
 
     @DeleteMapping("/{productId}/variants")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String deleteVariant(
+    public void deleteVariant(
             @PathVariable Long productId,
             @RequestParam(required = false) String color,
             @RequestParam(required = false) String size
     ){
         productApplicationService.deleteProductVariant(productId, color, size);
-        return "Biến thể đã bị xóa";
     }
 
 }

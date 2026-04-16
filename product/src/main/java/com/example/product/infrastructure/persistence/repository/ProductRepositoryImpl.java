@@ -67,11 +67,6 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Optional<Product> findBySku(String sku) {
-        return springDataProductRepository.findBySku(sku).map(productEntityMapper::toDomain);
-    }
-
-    @Override
     public void deleteById(Long id) {
         springDataProductRepository.deleteById(id);
 

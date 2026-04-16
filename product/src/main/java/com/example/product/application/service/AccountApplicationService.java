@@ -1,7 +1,6 @@
 package com.example.product.application.service;
 
 import com.example.product.application.dto.command.CreateAccountByAdminCommand;
-import com.example.product.application.dto.command.RegisterAccountCommand;
 import com.example.product.application.dto.response.AccountResponse;
 import com.example.product.application.mapper.AccountDtoMapper;
 import com.example.product.domain.model.Account;
@@ -12,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 

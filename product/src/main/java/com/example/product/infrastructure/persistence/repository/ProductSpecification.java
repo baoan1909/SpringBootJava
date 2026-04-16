@@ -2,6 +2,7 @@ package com.example.product.infrastructure.persistence.repository;
 
 import com.example.product.application.dto.command.ProductCriteriaCommand;
 import com.example.product.infrastructure.persistence.entity.ProductJpaEntity;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -16,17 +17,28 @@ public class ProductSpecification {
             if (command.keyWord() != null && !command.keyWord().isBlank()) {
                 String pattern = "%" + command.keyWord().toLowerCase() + "%";
                 Predicate nameLike = cb.like(cb.lower(root.get("name")), pattern);
-                Predicate skuLike = cb.like(cb.lower(root.get("sku")), pattern);
-                predicates.add(cb.or(nameLike, skuLike));
+                Predicate idLike = cb.like(root.get("id").as(String.class), pattern);
+
+                jakarta.persistence.criteria.Join<Object, Object> variantJoin = root.join("variants", JoinType.LEFT);
+                Predicate variantSkuLike = cb.like(cb.lower(variantJoin.get("skuCode")), pattern);
+
+                predicates.add(cb.or(nameLike, idLike, variantSkuLike));
+
+                query.distinct(true);
             }
 
             if (command.minPrice() != null) {
-                predicates.add(cb.greaterThanOrEqualTo(root.get("price"), command.minPrice()));
+                predicates.add(cb.greaterThanOrEqualTo(root.get("maxPrice"), command.minPrice()));
             }
 
             if (command.maxPrice() != null) {
-                predicates.add(cb.lessThanOrEqualTo(root.get("price"), command.maxPrice()));
+                predicates.add(cb.lessThanOrEqualTo(root.get("minPrice"), command.maxPrice()));
             }
+
+            if(command.state() != null && !command.state().isBlank()){
+                predicates.add(cb.equal(root.get("state"), command.state()));
+            }
+
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };

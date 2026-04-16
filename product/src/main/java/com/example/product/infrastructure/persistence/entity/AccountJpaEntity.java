@@ -1,20 +1,18 @@
 package com.example.product.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.domain.AbstractAggregateRoot;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "accounts")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountJpaEntity{
+public class AccountJpaEntity extends AuditableAggregateRootJpaEntity<AccountJpaEntity> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,4 +33,19 @@ public class AccountJpaEntity{
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<RoleJpaEntity> roles = new HashSet<>();
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if(!(obj instanceof AccountJpaEntity)) return false;
+        AccountJpaEntity that = (AccountJpaEntity) obj;
+
+        return id !=null && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
 }

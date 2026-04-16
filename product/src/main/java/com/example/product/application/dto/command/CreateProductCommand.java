@@ -4,23 +4,27 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record CreateProductCommand(
-        String sku,
         String name,
-        BigDecimal price,
+        String slug,
+        String description,
         List<VariantItem> variants
 ) {
-    public record VariantItem(
-            List<String> colors,
-            List<String> sizes,
-            BigDecimal additionalPrice
-    ){
-
+    public CreateProductCommand {
+        variants = (variants == null) ? List.of() : variants;
     }
+    public record VariantItem(
+            BigDecimal price,
+            Integer stockQuantity,
+            String skuCode,
+            List<AttributeItem> attributes
+    ){
+        public VariantItem {
+            attributes = ((attributes == null) ? List.of() : attributes);
+        }
 
-    public CreateProductCommand(String sku, String name, BigDecimal price, List<VariantItem> variants) {
-        this.sku = sku;
-        this.name = name;
-        this.price = price;
-        this.variants = (variants == null) ? List.of() : variants;
+        public record AttributeItem(
+                String name,
+                String value
+        ){}
     }
 }

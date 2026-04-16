@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Getter
-public class Account extends AbstractAggregateRoot<Account> {
+public class Account extends AuditableAggregateRoot<Account> {
     private Long id;
     private String email;
     private String passwordHash;

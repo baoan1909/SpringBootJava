@@ -2,7 +2,6 @@ package com.example.product.interfaces.rest;
 
 import com.example.product.application.common.Pagination;
 import com.example.product.application.dto.command.CreateProductCommand;
-import com.example.product.application.dto.command.CreateVariantsCommand;
 import com.example.product.application.dto.command.ProductCriteriaCommand;
 import com.example.product.application.dto.response.ProductResponse;
 import com.example.product.application.dto.command.UpdateProductCommand;
@@ -25,12 +24,6 @@ public class ProductController {
         return productApplicationService.create(command);
     }
 
-    @PostMapping("/{productId}/variants")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ProductResponse createVariant(@PathVariable Long productId, @RequestBody CreateVariantsCommand command) {
-        return productApplicationService.createVariantToExistingProduct(productId, command);
-    }
-
     @PutMapping("/{id}")
     public ProductResponse update(@PathVariable Long id, @RequestBody UpdateProductCommand command) {
         return productApplicationService.update(id, command);
@@ -46,20 +39,45 @@ public class ProductController {
         return productApplicationService.getById(id);
     }
 
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}/approve")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        productApplicationService.delete(id);
+    public void approve(@PathVariable Long id) {
+        productApplicationService.approveProduct(id);
     }
 
-    @DeleteMapping("/{productId}/variants")
+    @PatchMapping("/{id}/reject")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteVariant(
-            @PathVariable Long productId,
-            @RequestParam(required = false) String color,
-            @RequestParam(required = false) String size
-    ){
-        productApplicationService.deleteProductVariant(productId, color, size);
+    public void reject(@PathVariable Long id, @RequestParam String reason) {
+        productApplicationService.rejectProduct(id, reason);
     }
 
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteBySeller(@PathVariable Long id) {
+        productApplicationService.deleteBySeller(id);
+    }
+
+    @PatchMapping("/{id}/freeze")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void freeze(@PathVariable Long id, @RequestParam String reason) {
+        productApplicationService.freezeProduct(id, reason);
+    }
+
+    @PatchMapping("/{id}/unfreeze")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void unfreeze(@PathVariable Long id, @RequestParam String reason) {
+        productApplicationService.unfreezeProduct(id, reason);
+    }
+
+    @PatchMapping("/{id}/resunmit")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void resunmit(@PathVariable Long id) {
+        productApplicationService.resubmitProduct(id);
+    }
+
+    @PatchMapping("/{id}/restore")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void restore(@PathVariable Long id) {
+        productApplicationService.restoreProduct(id);
+    }
 }

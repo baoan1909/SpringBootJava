@@ -11,7 +11,6 @@ public interface ProductRepository {
     Product save(Product product);
     Pagination<Product> findAll(ProductCriteriaCommand criteriaCommand);
     Optional<Product> findById(Long id);
-    Optional<Product> findBySku(String sku);
     void deleteById(Long id);
     boolean existsById(Long id);
 }

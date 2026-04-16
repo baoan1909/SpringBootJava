@@ -10,6 +10,4 @@ import java.util.Optional;
 public interface SpringDataProductRepository extends
         JpaRepository<ProductJpaEntity, Long>,
         JpaSpecificationExecutor<ProductJpaEntity> {
-
-    Optional<ProductJpaEntity> findBySku(String sku);
 }

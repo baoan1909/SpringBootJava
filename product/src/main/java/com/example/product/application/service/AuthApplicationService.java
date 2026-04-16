@@ -62,8 +62,8 @@ public class AuthApplicationService implements UserDetailsService {
             throw new IllegalArgumentException("Email đã được sử dụng");
         }
 
-        Role userRole = roleRepository.findByName("USER")
-                .orElseThrow(() -> new IllegalStateException("Hệ thống chưa cấu hình ROLE_USER"));
+        Role userRole = roleRepository.findByName("CUSTOMER")
+                .orElseThrow(() -> new IllegalStateException("Hệ thống chưa cấu hình ROLE_CUSTOMER"));
 
         String encodePassword = passwordEncoder.encode(command.password());
 

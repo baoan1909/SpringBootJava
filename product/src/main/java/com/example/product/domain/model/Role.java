@@ -1,14 +1,14 @@
 package com.example.product.domain.model;
 
-import jakarta.persistence.Entity;
 import lombok.Getter;
-
-import javax.swing.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 public class Role {
+    public static final String ROLE_ADMIN = "ADMIN";
+    public static final String ROLE_SELLER = "SELLER";
+    public static final String ROLE_CUSTOMER = "CUSTOMER";
+
+
     private Long id;
     private String name;
     private String description;
@@ -34,5 +34,11 @@ public class Role {
 
     public void markAsDeleted() {
         this.deleted = true;
+    }
+
+    private boolean isSystemDefaultRole(){
+        return ROLE_ADMIN.equals(this.name) ||
+                ROLE_SELLER.equals(this.name) ||
+                ROLE_CUSTOMER.equals(this.name);
     }
 }

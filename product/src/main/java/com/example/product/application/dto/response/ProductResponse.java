@@ -5,9 +5,26 @@ import java.util.List;
 
 public record ProductResponse(
         Long id,
-        String sku,
         String name,
-        BigDecimal price,
+        String slug,
+        String description,
+        String state,
+        BigDecimal minPrice,
+        BigDecimal maxPrice,
+        Integer totalStock,
         List<ProductVariantResponse> variants
 ) {
+    public record ProductVariantResponse(
+            Long id,
+            String skuCode,
+            BigDecimal price,
+            Integer stockQuantity,
+            String variantSummary,
+            List<AttributeResponse> attributes
+    ){}
+
+    public record AttributeResponse(
+            String name,
+            String value
+    ){}
 }

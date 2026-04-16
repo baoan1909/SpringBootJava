@@ -5,18 +5,27 @@ import java.util.List;
 
 public record UpdateProductCommand(
         String name,
-        BigDecimal price,
-        List<VariantUpdateItem> variants
+        String slug,
+        String description,
+        List<VariantItem> variants
 ) {
-    public record VariantUpdateItem(
-            String color,
-            String size,
-            BigDecimal additionalPrice
-    ){}
+    public UpdateProductCommand{
+        variants = (variants == null) ? List.of() : variants;
+    }
+    public record VariantItem(
+            Long id,
+            BigDecimal price,
+            Integer stockQuantity,
+            String skuCode,
+            List<AttributeItem> attributes
+    ){
+        public VariantItem {
+            attributes = ((attributes == null) ? List.of() : attributes);
+        }
 
-    public UpdateProductCommand(String name, BigDecimal price, List<VariantUpdateItem> variants) {
-        this.name = name;
-        this.price = price;
-        this.variants = (variants == null) ? List.of() : variants;
+        public record AttributeItem(
+                String name,
+                String value
+        ){}
     }
 }

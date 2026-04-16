@@ -7,7 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/admin/accounts")
+@RequestMapping("/api/accounts")
 public class AccountController {
     private final AccountApplicationService accountApplicationService;
 
@@ -20,4 +20,5 @@ public class AccountController {
     public AccountResponse createAccount(@RequestBody CreateAccountByAdminCommand command) {
         return accountApplicationService.createAccountByAdmin(command);
     }
+
 }

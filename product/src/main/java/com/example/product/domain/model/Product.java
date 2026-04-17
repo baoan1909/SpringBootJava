@@ -36,12 +36,12 @@ public class Product extends Auditable{
     }
 
     @Default
-    public Product(Long id, String name, String slug, String description, String rejectionReason, List<ProductVariant> variants) {
+    public Product(Long id, String name, String slug, String description, ProductStatus status, String rejectionReason, List<ProductVariant> variants) {
         this.id = id;
         this.name = name;
         this.slug = slug;
         this.description = description;
-        this.status = ProductStatus.PENDING_REVIEW;
+        this.status = status;
         this.rejectionReason = rejectionReason;
         if(variants != null){
             this.variants.addAll(variants);
@@ -116,8 +116,8 @@ public class Product extends Auditable{
     }
 
     public void resubmit(){
-        if(this.status != ProductStatus.REJECTED && this.status != ProductStatus.DELETED){
-            throw new IllegalStateException("Chỉ có thể gửi duyệt lại sản phẩm bị từ chối hoặc đã xóa");
+        if(this.status != ProductStatus.REJECTED){
+            throw new IllegalStateException("Chỉ có thể gửi duyệt lại sản phẩm bị từ chối");
         }
         this.status = ProductStatus.PENDING_REVIEW;
         this.rejectionReason = null;
@@ -138,6 +138,9 @@ public class Product extends Auditable{
         if(reason == null || reason.isBlank()){
             throw new IllegalArgumentException("Phải cung cấp lý do gỡ đóng băng cho seller");
         }
+        if(this.status != ProductStatus.FROZEN){
+            throw new IllegalStateException("Chỉ có thể gỡ đóng băng sản phẩm đã bị đóng băng");
+        }
         this.status = ProductStatus.ON_SHELF;
         this.rejectionReason = reason;
     }
@@ -150,11 +153,9 @@ public class Product extends Auditable{
     }
 
     public void restore(){
-        if(status == ProductStatus.FROZEN){
-            throw new IllegalStateException("Sản phẩm đang bị khóa do vi phạm không thể tự xóa");
+        if(status != ProductStatus.DELETED){
+            throw new IllegalStateException("Chỉ có thể khôi phục sản phẩm đã bị xóa");
         }
-        if(status == ProductStatus.DELETED){
-            this.status = ProductStatus.PENDING_REVIEW;
-        }
+        this.status = ProductStatus.PENDING_REVIEW;
     }
 }

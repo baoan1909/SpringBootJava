@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface AccountRepository {
     Account save(Account account);
     Optional<Account> findByEmail(String email);
-    boolean exitsEmail(String email);
+    boolean existsEmail(String email);
 }

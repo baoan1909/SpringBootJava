@@ -35,8 +35,8 @@ public class ProductSpecification {
                 predicates.add(cb.lessThanOrEqualTo(root.get("minPrice"), command.maxPrice()));
             }
 
-            if(command.state() != null && !command.state().isBlank()){
-                predicates.add(cb.equal(root.get("state"), command.state()));
+            if(command.status() != null && !command.status().isBlank()){
+                predicates.add(cb.equal(root.get("status"), command.status()));
             }
 
 

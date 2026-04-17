@@ -4,7 +4,7 @@ import com.example.product.application.dto.command.LoginAccountCommand;
 import com.example.product.application.dto.command.RegisterAccountCommand;
 import com.example.product.application.dto.response.AccountResponse;
 import com.example.product.application.dto.response.JwtAuthResponse;
-import com.example.product.application.service.AuthApplicationService;
+import com.example.product.application.service.AccountApplicationService;
 import com.example.product.security.jwt.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final AuthApplicationService authApplicationService;
+    private final AccountApplicationService accountApplicationService;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, AuthApplicationService authApplicationService) {
+    public AuthController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, AccountApplicationService accountApplicationService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.authApplicationService = authApplicationService;
+        this.accountApplicationService = accountApplicationService;
     }
 
     @PostMapping("/login")
@@ -44,6 +44,6 @@ public class AuthController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public AccountResponse register(@RequestBody RegisterAccountCommand command) {
-        return authApplicationService.registerAccount(command);
+        return accountApplicationService.registerAccount(command);
     }
 }

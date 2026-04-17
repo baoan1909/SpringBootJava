@@ -47,7 +47,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public boolean exitsEmail(String email) {
+    public boolean existsEmail(String email) {
         return springDataAccountRepository.existsByEmail(email);
     }
 }

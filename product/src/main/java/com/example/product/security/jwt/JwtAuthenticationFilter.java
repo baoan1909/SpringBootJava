@@ -1,6 +1,5 @@
 package com.example.product.security.jwt;
 
-import ch.qos.logback.core.util.StringUtil;
 import com.example.product.application.service.AuthApplicationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

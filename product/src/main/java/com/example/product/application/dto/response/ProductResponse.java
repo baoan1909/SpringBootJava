@@ -8,7 +8,7 @@ public record ProductResponse(
         String name,
         String slug,
         String description,
-        String state,
+        String status,
         BigDecimal minPrice,
         BigDecimal maxPrice,
         Integer totalStock,

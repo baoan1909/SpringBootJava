@@ -6,7 +6,7 @@ public record ProductCriteriaCommand(
         String keyWord,
         BigDecimal minPrice,
         BigDecimal maxPrice,
-        String state,
+        String status,
         Integer page,
         Integer size
 ) {
@@ -31,10 +31,10 @@ public record ProductCriteriaCommand(
             keyWord = keyWord.trim();
         }
 
-        if(state != null){
-            state = state.trim();
-            if (state.equalsIgnoreCase("ALL")){
-                state = null;
+        if(status != null){
+            status = status.trim();
+            if (status.equalsIgnoreCase("ALL")){
+                status = null;
             }
         }
     }

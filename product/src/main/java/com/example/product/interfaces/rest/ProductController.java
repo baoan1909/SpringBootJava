@@ -3,6 +3,7 @@ package com.example.product.interfaces.rest;
 import com.example.product.application.common.Pagination;
 import com.example.product.application.dto.command.CreateProductCommand;
 import com.example.product.application.dto.command.ProductCriteriaCommand;
+import com.example.product.application.dto.command.ReasonCommand;
 import com.example.product.application.dto.response.ProductResponse;
 import com.example.product.application.dto.command.UpdateProductCommand;
 import com.example.product.application.service.ProductApplicationService;
@@ -47,8 +48,8 @@ public class ProductController {
 
     @PatchMapping("/{id}/reject")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void reject(@PathVariable Long id, @RequestParam String reason) {
-        productApplicationService.rejectProduct(id, reason);
+    public void reject(@PathVariable Long id, @RequestBody ReasonCommand command) {
+        productApplicationService.rejectProduct(id, command.reason());
     }
 
     @PatchMapping("/{id}")
@@ -59,19 +60,19 @@ public class ProductController {
 
     @PatchMapping("/{id}/freeze")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void freeze(@PathVariable Long id, @RequestParam String reason) {
-        productApplicationService.freezeProduct(id, reason);
+    public void freeze(@PathVariable Long id, @RequestBody ReasonCommand command) {
+        productApplicationService.freezeProduct(id, command.reason());
     }
 
     @PatchMapping("/{id}/unfreeze")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void unfreeze(@PathVariable Long id, @RequestParam String reason) {
-        productApplicationService.unfreezeProduct(id, reason);
+    public void unfreeze(@PathVariable Long id, @RequestBody ReasonCommand command) {
+        productApplicationService.unfreezeProduct(id, command.reason());
     }
 
-    @PatchMapping("/{id}/resunmit")
+    @PatchMapping("/{id}/resubmit")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void resunmit(@PathVariable Long id) {
+    public void resubmit(@PathVariable Long id) {
         productApplicationService.resubmitProduct(id);
     }
 

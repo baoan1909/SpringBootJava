@@ -7,28 +7,18 @@ import com.example.product.application.dto.command.ReasonCommand;
 import com.example.product.application.dto.response.ProductResponse;
 import com.example.product.application.dto.command.UpdateProductCommand;
 import com.example.product.application.service.ProductApplicationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/products")
-public class ProductController {
+@RequestMapping("/api/admin/products")
+@PreAuthorize("hasRole('ADMIN')")
+@RequiredArgsConstructor
+public class AdminProductController {
     private final ProductApplicationService productApplicationService;
 
-    public ProductController(ProductApplicationService productApplicationService) {
-        this.productApplicationService = productApplicationService;
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ProductResponse create(@RequestBody CreateProductCommand command) {
-        return productApplicationService.create(command);
-    }
-
-    @PutMapping("/{id}")
-    public ProductResponse update(@PathVariable Long id, @RequestBody UpdateProductCommand command) {
-        return productApplicationService.update(id, command);
-    }
 
     @GetMapping
     public Pagination<ProductResponse> findAll(ProductCriteriaCommand command) {
@@ -52,12 +42,6 @@ public class ProductController {
         productApplicationService.rejectProduct(id, command.reason());
     }
 
-    @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBySeller(@PathVariable Long id) {
-        productApplicationService.deleteBySeller(id);
-    }
-
     @PatchMapping("/{id}/freeze")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void freeze(@PathVariable Long id, @RequestBody ReasonCommand command) {
@@ -68,17 +52,5 @@ public class ProductController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void unfreeze(@PathVariable Long id, @RequestBody ReasonCommand command) {
         productApplicationService.unfreezeProduct(id, command.reason());
-    }
-
-    @PatchMapping("/{id}/resubmit")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void resubmit(@PathVariable Long id) {
-        productApplicationService.resubmitProduct(id);
-    }
-
-    @PatchMapping("/{id}/restore")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void restore(@PathVariable Long id) {
-        productApplicationService.restoreProduct(id);
     }
 }

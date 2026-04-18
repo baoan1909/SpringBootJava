@@ -15,15 +15,20 @@ public class ProductSpecification {
             List<Predicate> predicates = new ArrayList<>();
 
             if (command.keyWord() != null && !command.keyWord().isBlank()) {
-                String pattern = "%" + command.keyWord().toLowerCase() + "%";
-                Predicate nameLike = cb.like(cb.lower(root.get("name")), pattern);
-                Predicate idLike = cb.like(root.get("id").as(String.class), pattern);
+                String keyword = command.keyWord().trim();
+                String pattern = "%" + keyword.toLowerCase() + "%";
 
+                List<Predicate> orPredicates = new ArrayList<>();
+                orPredicates.add(cb.like(cb.lower(root.get("name")), pattern));
                 jakarta.persistence.criteria.Join<Object, Object> variantJoin = root.join("variants", JoinType.LEFT);
-                Predicate variantSkuLike = cb.like(cb.lower(variantJoin.get("skuCode")), pattern);
+                orPredicates.add(cb.like(cb.lower(variantJoin.get("skuCode")), pattern));
 
-                predicates.add(cb.or(nameLike, idLike, variantSkuLike));
-
+                try {
+                    Long idSearch = Long.valueOf(keyword);
+                    orPredicates.add(cb.equal(root.get("id"), idSearch));
+                } catch (NumberFormatException e) {
+                }
+                predicates.add(cb.or(orPredicates.toArray(new Predicate[0])));
                 query.distinct(true);
             }
 
@@ -38,7 +43,9 @@ public class ProductSpecification {
             if(command.status() != null && !command.status().isBlank()){
                 predicates.add(cb.equal(root.get("status"), command.status()));
             }
-
+            if (command.ownerEmail() != null && !command.ownerEmail().isBlank()) {
+                predicates.add(cb.equal(root.get("createdBy"), command.ownerEmail()));
+            }
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };

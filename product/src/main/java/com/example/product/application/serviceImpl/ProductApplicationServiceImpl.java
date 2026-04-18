@@ -9,6 +9,7 @@ import com.example.product.application.mapper.ProductDtoMapper;
 import com.example.product.application.service.ProductApplicationService;
 import com.example.product.domain.exception.ProductNotFoundException;
 import com.example.product.domain.model.Product;
+import com.example.product.domain.model.ProductStatus;
 import com.example.product.domain.model.ProductVariant;
 import com.example.product.domain.repository.ProductRepository;
 import org.springframework.security.access.AccessDeniedException;
@@ -120,6 +121,33 @@ public class ProductApplicationServiceImpl implements ProductApplicationService 
 
     @Override
     @Transactional(readOnly = true)
+    public ProductResponse getByIdForUsers(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
+
+        if (product.getStatus() != ProductStatus.ON_SHELF) {
+            throw new RuntimeException("Sản phẩm không tồn tại hoặc đã ngừng kinh doanh");
+        }
+        return productDtoMapper.toResponse(product);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasRole('SELLER')")
+    public ProductResponse getByIdForSeller(Long id, String sellerEmail) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm với ID: " + id));
+
+        if (product.getCreatedBy() == null || !product.getCreatedBy().equals(sellerEmail)) {
+            throw new RuntimeException("Bạn không có quyền truy cập sản phẩm này!");
+        }
+
+        return productDtoMapper.toResponse(product);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasRole('ADMIN')")
     public ProductResponse getById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
@@ -128,6 +156,22 @@ public class ProductApplicationServiceImpl implements ProductApplicationService 
 
     @Override
     @Transactional(readOnly = true)
+    public Pagination<ProductResponse> getAllForUsers(ProductCriteriaCommand command) {
+        ProductCriteriaCommand forcedCommand = command.withStatus("ON_SHELF");
+        return this.getAll(forcedCommand);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasRole('SELLER')")
+    public Pagination<ProductResponse> getAllBySellerEmail(String email, ProductCriteriaCommand command) {
+        ProductCriteriaCommand forcedCommand = command.withOwnerEmail(email);
+        return this.getAll(forcedCommand);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasRole('ADMIN')")
     public Pagination<ProductResponse> getAll(ProductCriteriaCommand command) {
         Pagination<Product> productPage = productRepository.findAll(command);
         List<ProductResponse> responseData = productPage.data()

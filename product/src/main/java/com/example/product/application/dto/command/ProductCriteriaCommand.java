@@ -7,6 +7,7 @@ public record ProductCriteriaCommand(
         BigDecimal minPrice,
         BigDecimal maxPrice,
         String status,
+        String ownerEmail,
         Integer page,
         Integer size
 ) {
@@ -37,5 +38,19 @@ public record ProductCriteriaCommand(
                 status = null;
             }
         }
+    }
+
+    public ProductCriteriaCommand withStatus(String status) {
+        return new ProductCriteriaCommand(
+                this.keyWord, this.minPrice, this.maxPrice,
+                status, this.ownerEmail, this.page, this.size
+        );
+    }
+
+    public ProductCriteriaCommand withOwnerEmail(String ownerEmail) {
+        return new ProductCriteriaCommand(
+                this.keyWord, this.minPrice, this.maxPrice,
+                this.status, ownerEmail, this.page, this.size
+        );
     }
 }

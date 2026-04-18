@@ -18,6 +18,10 @@ public interface ProductApplicationService {
     void freezeProduct(Long id, String reason);
     void unfreezeProduct(Long id, String reason);
 
+    ProductResponse getByIdForUsers(Long id);
+    ProductResponse getByIdForSeller(Long id, String sellerEmail);
     ProductResponse getById(Long id);
+    Pagination<ProductResponse> getAllForUsers(ProductCriteriaCommand command);
+    Pagination<ProductResponse> getAllBySellerEmail(String email, ProductCriteriaCommand command);
     Pagination<ProductResponse> getAll(ProductCriteriaCommand command);
 }

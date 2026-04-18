@@ -1,6 +1,6 @@
 package com.example.product.security.jwt;
 
-import com.example.product.application.service.AuthApplicationService;
+import com.example.product.application.serviceImpl.AuthApplicationServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,11 +18,11 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
-    private final AuthApplicationService authApplicationService;
+    private final AuthApplicationServiceImpl authApplicationServiceImpl;
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, AuthApplicationService authApplicationService) {
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, AuthApplicationServiceImpl authApplicationServiceImpl) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.authApplicationService = authApplicationService;
+        this.authApplicationServiceImpl = authApplicationServiceImpl;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if(StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)){
                 String email = jwtTokenProvider.getEmailFromToken(token);
-                UserDetails userDetails = authApplicationService.loadUserByUsername(email);
+                UserDetails userDetails = authApplicationServiceImpl.loadUserByUsername(email);
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

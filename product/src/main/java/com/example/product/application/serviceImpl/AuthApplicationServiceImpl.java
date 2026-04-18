@@ -1,4 +1,4 @@
-package com.example.product.application.service;
+package com.example.product.application.serviceImpl;
 
 import com.example.product.domain.model.Account;
 import com.example.product.domain.repository.AccountRepository;
@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class AuthApplicationService implements UserDetailsService {
+public class AuthApplicationServiceImpl implements UserDetailsService {
     private final AccountRepository accountRepository;
 
-    public AuthApplicationService(AccountRepository accountRepository) {
+    public AuthApplicationServiceImpl(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
 

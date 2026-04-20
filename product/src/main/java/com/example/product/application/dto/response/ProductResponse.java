@@ -1,6 +1,7 @@
 package com.example.product.application.dto.response;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record ProductResponse(
@@ -12,6 +13,7 @@ public record ProductResponse(
         BigDecimal minPrice,
         BigDecimal maxPrice,
         Integer totalStock,
+        LocalDateTime createdDate,
         List<ProductVariantResponse> variants
 ) {
     public record ProductVariantResponse(

@@ -73,6 +73,12 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public void deleteAll() {
+        springDataProductRepository.deleteAll();
+    }
+
+
+    @Override
     public boolean existsById(Long id) {
         return springDataProductRepository.existsById(id);
     }

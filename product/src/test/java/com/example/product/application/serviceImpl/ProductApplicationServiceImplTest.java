@@ -355,4 +355,46 @@ class ProductApplicationServiceImplTest {
         assertEquals(mockResponse, actualPage.data().get(0)); // Kiểm tra xem DTO mapper có map đúng item không
         assertEquals(1, actualPage.totalElements());
     }
+
+    @Test
+    void getByIdForSeller_ShouldReturnProductResponse_WhenProductExists() {
+        Long productId = 1L;
+        Product mockProduct = mock(Product.class);
+        ProductResponse expectedResponse = mock(ProductResponse.class);
+
+        when(mockProduct.getCreatedBy()).thenReturn(CURRENT_SELLER_EMAIL);
+        when(productRepository.findById(productId)).thenReturn(Optional.of(mockProduct));
+        when(productDtoMapper.toResponse(mockProduct)).thenReturn(expectedResponse);
+
+        ProductResponse actualResponse = productApplicationService.getByIdForSeller(productId, CURRENT_SELLER_EMAIL);
+        assertNotNull(actualResponse);
+        assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    void getByIdForSeller_ShouldThrowException_WhenNotOwner(){
+        Long productId = 2L;
+        Product mockProduct = mock(Product.class);
+
+        when(mockProduct.getCreatedBy()).thenReturn(CURRENT_SELLER_EMAIL);
+        when(productRepository.findById(productId)).thenReturn(Optional.of(mockProduct));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            productApplicationService.getByIdForSeller(productId, HACKER_EMAIL);
+        });
+
+        assertEquals("Bạn không có quyền truy cập sản phẩm này!", exception.getMessage());
+    }
+
+    @Test
+    void getByIdForSeller_ShouldThrowException_WhenProductDoesNotExist(){
+        Long invalidProductId = 999L;
+        when(productRepository.findById(invalidProductId)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            productApplicationService.getByIdForSeller(invalidProductId, CURRENT_SELLER_EMAIL);
+        });
+
+        assertEquals("Không tìm thấy sản phẩm với ID: " + invalidProductId, exception.getMessage());
+    }
 }
